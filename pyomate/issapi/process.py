@@ -1,4 +1,4 @@
-## api to check when IIS is going to be overhead
+## api to check when ISS is going to be overhead
 import requests
 import datetime
 
