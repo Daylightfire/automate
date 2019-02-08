@@ -46,9 +46,10 @@ foreach ($i in $folder) {
             $n = $n + 1
             }
             else {
+                $num = Get-ChildItem "$imagespath\$date"
+                $n = $num.Length + 1
                 Rename-Item "$imagespath\$date.jpg" -NewName "$imagespath\$date-$n.jpg"
                 Move-Item -Path "$imagespath\$date-$n.jpg"-Destination "$imagespath\$date"
-                $n = $n + 1
                 }
         }
         else {
@@ -59,4 +60,4 @@ foreach ($i in $folder) {
     
     }
 }
-sort-image -imagespath [ENTER PATH HERE]
+sort-image -imagespath 'D:\test\Eddie'
