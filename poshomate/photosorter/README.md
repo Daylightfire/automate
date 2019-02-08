@@ -16,7 +16,8 @@ A request for a script which can sort through potentially thousands of images an
 
 ### To do
 
-1. Check for any improvements in both functions ie, speed, efficiency etc
-2. Modulise script
-3. Look for exe possibilities 
-4. improve ease of use
+1. Make Recursive and include get-childitem count to handle multiple photos from one day that are not in order
+2. Check for any improvements in both functions ie, speed, efficiency etc
+3. Modulise script
+4. Look for exe possibilities
+5. improve ease of use
