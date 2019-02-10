@@ -6,6 +6,8 @@ import datetime
 parameters = {"n": 6}
 app = Flask(__name__)
 
+from app import routes
+
 @app.route("/")
 def home():
     
