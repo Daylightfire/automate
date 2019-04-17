@@ -14,9 +14,26 @@ function passowrd {
     Return $string
 }
 
-$pass = Get-StringHash -String passowrd "md5"
+function special([String] $pw)    {
+    $splist = @("!",'"', '\', "$", "%", "^", "&", "*", "/")
+    $spaff = Get-Random -InputObject $splist -Count 1
+    $Select = Get-Random -Maximum 15
+    $a = $pw[$Select]
+    $pwspec = $pw.Replace($a, $spaff)
+    
+    Return $pwspec
+}
+$word = ""
+$pass = ""
+$password = ""
+$strings = passowrd
+$pass = Get-StringHash -String $strings "md5"
 
 $word = $pass.Substring(0,16)
-$count = $word.Length
 $word
-$count
+
+$password = special($word)
+$password = special($password)
+$password = special($password)
+#$count = $word.Length
+$password
