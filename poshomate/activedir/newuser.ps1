@@ -1,4 +1,11 @@
+param (
+        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
+        [string]$firstName,
+        [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
+        [string]$lastName
+    )
 Import-Module ActiveDirectory
+
 
 function main {
     param (
@@ -67,6 +74,4 @@ function special([String] $pw)    {
     Return $pwspec
 }
 
-
-
-main -first 'Steve' -last 'Rogers'
+main  -first $firstName -last $lastName

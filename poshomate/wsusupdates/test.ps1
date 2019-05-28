@@ -11,3 +11,7 @@ If ($a -gt $b)  {
 $date = (get-date).Adddays(-1).AddDays(-1).ToString("dd/MM/yyyy")
 
 $date
+
+
+
+SELECT * FROM [K10.dev].[dbo].[OM_Activity] where ActivityCreated > '2018-05-00 00:09:34.2380720' AND ActivityURL LIKE '%/policies/privacy-policy%'
