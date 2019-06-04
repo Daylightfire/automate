@@ -1,7 +1,6 @@
 $sitename = ''
 $hostheader = ''
 $iispath = 'F:\websites\'
-$sitepath = "$iispath\$sitename"
 $hostname = hostname
 
 # Remove Defaults
@@ -20,8 +19,17 @@ switch ($hostname) {
     DK10WEB { ($sitename = "axe-cms") , ($hostheader = "dev.axelos.com")}
     Default {Write-Host "Balls"}
 }
-
+$sitepath = "$iispath\$sitename"
 # Create website
 Write-Host "Creating application pool and website"
-$apppool = New-WebAppPool -Name $sitename
+$apppool = New-WebAppPool -Name $sitename -Force
+if (!(Test-Path $iispath)){
+    write-host "path does not exist Creating now"
+    New-Item -Path $iispath -ItemType Directory
+}
+if (!(Test-Path $sitepath)){
+    write-host "path does not exist, Creating now"
+    New-Item -Path $sitepath -ItemType Directory
+}
 New-Website -Name $sitename -Port 80 -HostHeader $hostheader -PhysicalPath $sitepath -ApplicationPool $apppool
+
