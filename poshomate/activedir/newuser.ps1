@@ -27,6 +27,8 @@ function createuser{
         [Parameter(Position = 1, Mandatory = $true)]
         [string]$lastname
     )
+
+# Generate unique password
     $words = Get-StringHash -String passowrd "md5"
     $pass = $words.Substring(0,16)
     $password = special($pass)
@@ -34,20 +36,35 @@ function createuser{
     $password = special($password)
 
     $securep = ConvertTo-SecureString $password -AsPlainText -Force 
+
+ # Create user details   
     $newuser = @{
 
         GivenName = $firstname
-        Surname = "$lastname"
+        Surname = $lastname
         UserPrincipalName = ("$firstname.$lastname")
         Name = ("$firstname.$lastname")
         SamAccountName = ("$firstname.$lastname")
         password = $securep
     }
+# Output the user account and password
     [string]$Udeets = $newuser.Name | Out-File -FilePath 'C:\temp\user.txt' 
     [string]$Upeets  = $password | Out-file -FilePath 'C:\temp\user.txt' -Append
-    New-ADUser -Name $newuser.Name -GivenName $newuser.GivenName -Surname $newuser.Surname -UserPrincipalName $newuser.UserPrincipalName -SamAccountName $newuser.SamAccountName -AccountPassword $newuser.password
-    Add-ADGroupMember -Identity "Domain Admins" -Members $newuser.SamAccountName
-    Add-ADGroupMember -Identity "MMT Users" -Members $newuser.SamAccountName
+
+# Create user on DOMAIN, via the DOMAIN Controller
+    invoke-command -ComputerName "win2012r2dc" -Credential rootops\capt.america -ScriptBlock   {
+        New-ADUser -Name $args[0] -GivenName $args[1] -Surname $args[2] -UserPrincipalName $args[3] -SamAccountName $args[4]  -AccountPassword $args[5] -Enabled $true
+       Add-ADGroupMember -Identity "Domain Admins" -Members $args[4]
+       Add-ADGroupMember -Identity "MMT Users" -Members $args[4]
+        } -ArgumentList $newuser.Name, $newuser.GivenName, $newuser.Surname,$newuser.UserPrincipalName,$newuser.SamAccountName,$newuser.password
+
+# Create LOCAL user on NON DOMAIN joined Servers
+    Invoke-Command -ComputerName "win2012r2nondc" -Credential win2012r2nondc\scarlet.witch -ScriptBlock {
+        New-LocalUser -Name $args[0] -Password $args[1] -FullName $args[0] 
+        Add-LocalGroupMember -Group "Users" -Member $args[0]
+        Add-LocalGroupMember -Group "Administrators" -Member $args[0]
+
+        } -ArgumentList $newuser.Name, $securep
 }
 
 function passowrd {
