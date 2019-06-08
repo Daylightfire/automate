@@ -1,9 +1,9 @@
-param (
-        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
+<# param (
+        [Parameter(Position = 0, Mandatory = $true,  ValueFromPipeline = $true)]
         [string]$firstName,
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
         [string]$lastName
-    )
+    )#>
 Import-Module ActiveDirectory
 
 
@@ -73,5 +73,8 @@ function special([String] $pw)    {
     
     Return $pwspec
 }
+
+$firstName = Read-Host -Prompt "Input users First Name"
+$lastName = Read-Host -Prompt "Input users Last Name"
 
 main  -first $firstName -last $lastName
