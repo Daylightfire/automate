@@ -1,25 +1,3 @@
-
-<# This script should be run from a machine that has access to the Domain controller and has been given access to any required 
-Non Domain machines.
-All servers should be on PoSh 5+ especially the non domain servers as new-localuser etc requires PoSh 5
-#>    
-Import-Module ActiveDirectory
-
-
-function main {
-    param (
-        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
-        [string]$first,
-        [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
-        [string]$last,
-        [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
-        [string]$comp
-    )
-    $userdeats = createuser $first $last $comp
-    $userdeats
-}
-
-
 function createuser{
     param (
         
@@ -62,23 +40,12 @@ function createuser{
     [string]$Udeets = $newuser.Name | Out-File -FilePath 'e:\temp\user.txt' 
     [string]$Upeets  = $password | Out-file -FilePath 'e:\temp\user.txt' -Append
 
-# Create user on DOMAIN, via the DOMAIN Controller
-    invoke-command -ComputerName "" -Credential rootops\capt.america -ScriptBlock   {
-        New-ADUser -Name $args[0] -GivenName $args[1] -Surname $args[2] -UserPrincipalName $args[3] -SamAccountName $args[4]  -AccountPassword $args[5] -Enabled $true
-       Add-ADGroupMember -Identity "Domain Admins" -Members $args[4]
-       Add-ADGroupMember -Identity $compgroup -Me
-        } -ArgumentList $newuser.Name, $newuser.GivenName, $newuser.Surname,$newuser.UserPrincipalName,$newuser.SamAccountName,$newuser.password
+New-ADUser -Name $args[0] -GivenName $args[1] -Surname $args[2] -UserPrincipalName $args[3] -SamAccountName $args[4]  -AccountPassword $args[5] -Enabled $true
+Add-ADGroupMember -Identity "Domain Admins" -Members $args[4]
+Add-ADGroupMember -Identity $compgroup -Me
 
-# Create LOCAL user on NON DOMAIN joined Servers
-    foreach($server in $ndc){
-    Invoke-Command -ComputerName $args[2] -Credential $args[2]\graphite.rack -ScriptBlock {
-        New-LocalUser -Name $args[0] -Password $args[1] -FullName $args[0] 
-        Add-LocalGroupMember -Group "Users" -Member $args[0]
-        Add-LocalGroupMember -Group "Administrators" -Member $args[0]
-
-        } -ArgumentList $newuser.Name, $securep, $server
-    }
 }
+
 function passowrd {
     $Getwords = Get-Content 'e:\scripts\\words.txt'
     $string = (Get-Random -InputObject $Getwords) + (Get-Random -InputObject $Getwords) + (Get-Random -InputObject $Getwords)
@@ -114,3 +81,4 @@ foreach ($user in $users)   {
     main  -first $firstName -last $lastName -comp $comp
 
 }
+
