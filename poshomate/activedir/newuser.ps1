@@ -6,7 +6,7 @@ All servers should be on PoSh 5+ especially the non domain servers as new-localu
 Import-Module ActiveDirectory
 
 
-function main {
+function main { 
     param (
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
         [string]$first,
